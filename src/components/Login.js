@@ -1,28 +1,130 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Header from "./Header";
+import { validate } from "../utils/validate";
+import { auth } from "../utils/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
-const Login=()=>{
+const Login = () => {
+  const [isSignInForm, setSignInForm] = useState(true);
+  const [errMessage, setErrMessage] = useState(null);
 
-    const [isSignInForm,setSignInForm]=useState(true);
+  const fullName = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+  const navigate = useNavigate();
+  const dispatch=useDispatch();
 
-    const handleToggle=()=>{
-        setSignInForm(!isSignInForm);
+  const handleClick = (e) => {
+    e.preventDefault();
+    setErrMessage(validate(email.current.value, password.current.value));
+    if (errMessage) return;
+
+    if (!isSignInForm) {
+      // sign up
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: fullName.current.value,
+          }).then(() => {
+            // Profile updated!
+            // ...
+            console.log(user);
+            const {uid, email,displayName}=auth.currentUser;
+            dispatch(addUser({uid, email, displayName}))
+          });
+
+          navigate("/browse");
+          //   console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(`${errorCode}-${errorMessage}`);
+        });
+    } else {
+      // sign in
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          //   console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrMessage(`${errorCode}-${errorMessage}`);
+        });
     }
-    return(
-        <div>
-            <Header />
-            <div className="absolute">
-                <img src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_medium.jpg"></img>
-            </div>
-            <form className="absolute p-10 my-32 mx-auto left-0 right-0 bg-black w-3/12 bg-opacity-85 text-white">
-                <p className="font-bold text-3xl my-4">{isSignInForm?"Sign In":"Sign Up"}</p>
-                {!isSignInForm && <input className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border" placeholder="Full Name" type='text'/>}
-                <input className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border" placeholder="Email or mobile number" type='text'/>
-                <input className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border" placeholder="Password" type='password'/>
-                <button className="p-3 my-7 bg-red-600 w-full rounded-lg font-bold text-lg">{isSignInForm?"Sign In":"Sign Up"}</button>
-                <p>{isSignInForm?"New to Netflix?":"Already a user?"} <span className="font-bold cursor-pointer" onClick={handleToggle}>{isSignInForm?"Sign up now":"Sign in now"}</span></p>
-            </form>
-        </div>
-    )
-}
+  };
+
+  const handleToggle = () => {
+    setSignInForm(!isSignInForm);
+  };
+  return (
+    <div>
+      <Header />
+      <div className="absolute">
+        <img src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_medium.jpg"></img>
+      </div>
+      <form className="absolute p-10 my-32 mx-auto left-0 right-0 bg-black w-3/12 bg-opacity-85 text-white">
+        <p className="font-bold text-3xl my-4">
+          {isSignInForm ? "Sign In" : "Sign Up"}
+        </p>
+        {!isSignInForm && (
+          <input
+            ref={fullName}
+            className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border"
+            placeholder="Full Name"
+            type="text"
+          />
+        )}
+        <input
+          ref={email}
+          className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border"
+          placeholder="Email or mobile number"
+          type="text"
+        />
+        <input
+          ref={password}
+          className="p-3 my-2 w-full bg-gray-900 rounded-lg bg-opacity-80 border-white border"
+          placeholder="Password"
+          type="password"
+        />
+        {errMessage && (
+          <p className="p-2 font-bold text-red-700">{errMessage}</p>
+        )}
+        <button
+          onClick={handleClick}
+          className="p-3 my-7 bg-red-600 w-full rounded-lg font-bold text-lg"
+        >
+          {isSignInForm ? "Sign In" : "Sign Up"}
+        </button>
+        <p>
+          {isSignInForm ? "New to Netflix?" : "Already a user?"}{" "}
+          <span className="font-bold cursor-pointer" onClick={handleToggle}>
+            {isSignInForm ? "Sign up now" : "Sign in now"}
+          </span>
+        </p>
+      </form>
+    </div>
+  );
+};
 export default Login;
