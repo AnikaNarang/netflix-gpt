@@ -9,3 +9,4 @@ export const API_OPTIONS={
   }
 };
 export const POSTER_URL='https://image.tmdb.org/t/p/w200/'
+export const LANGUAGES_SUPPORTED=[{identifier:'en',name:'English'},{identifier:'hi',name:'Hindi'} ]
