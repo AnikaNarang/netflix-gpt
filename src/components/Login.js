@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { LOGIN_BG } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setSignInForm] = useState(true);
@@ -39,15 +40,10 @@ const Login = () => {
           updateProfile(user, {
             displayName: fullName.current.value,
           }).then(() => {
-            // Profile updated!
-            // ...
-            console.log(user);
             const {uid, email,displayName}=auth.currentUser;
             dispatch(addUser({uid, email, displayName}))
           });
 
-          navigate("/browse");
-          //   console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -64,8 +60,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          //   console.log(user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -82,7 +76,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img src="https://assets.nflxext.com/ffe/siteui/vlv3/258d0f77-2241-4282-b613-8354a7675d1a/web/IN-en-20250721-TRIFECTA-perspective_cadc8408-df6e-4313-a05d-daa9dcac139f_medium.jpg"></img>
+        <img src={LOGIN_BG}></img>
       </div>
       <form className="absolute p-10 my-32 mx-auto left-0 right-0 bg-black w-3/12 bg-opacity-85 text-white">
         <p className="font-bold text-3xl my-4">
