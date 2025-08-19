@@ -76,10 +76,10 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img src={LOGIN_BG}></img>
+        <img src={LOGIN_BG} className="h-screen w-screen object-cover"></img>
       </div>
-      <form className="absolute p-10 my-32 mx-auto left-0 right-0 bg-black w-3/12 bg-opacity-85 text-white">
-        <p className="font-bold text-3xl my-4">
+      <form className="absolute p-10 my-32 mx-auto left-0 right-0 bg-black md:w-3/12 bg-opacity-85 text-white">
+        <p className="font-bold text-2xl md:text-3xl my-4">
           {isSignInForm ? "Sign In" : "Sign Up"}
         </p>
         {!isSignInForm && (
