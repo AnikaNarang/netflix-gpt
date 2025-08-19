@@ -19,7 +19,7 @@ const Browse = () => {
   useUpcomingMovies();
 
   return (
-    <div>
+    <div className="">
       <Header />
       {gptSearchVisible ? (
         <GptSearch />
