@@ -4,7 +4,6 @@ import CardList from "./CardList";
 const GptResults=()=>{
     const {movieNames,movieResults}=useSelector(store=>store.gptSearch);
     if(!movieResults) return;
-    console.log(movieNames,movieResults)
     return(
         <div className="m-2 p-5 bg-black bg-opacity-80">
             <div className="">

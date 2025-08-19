@@ -29,12 +29,10 @@ const GptSearch = () => {
       model: "gemini-2.5-flash",
       contents: prompt,
     });
-    console.log(response.text);
     const movieNames = response?.text?.split(",");
     const promiseArr = movieNames.map((movie) => getMovies(movie.trim()));
     const gptMovies = await Promise.all(promiseArr);
     dispatch(addGptMovies({ movieNames, movieResults: gptMovies }));
-    console.log(gptMovies);
   };
 
   return (
