@@ -11,10 +11,10 @@ React project to create Netflix like UI. Also integrated LLM's to fetch movie su
 
 ### 📸Screenshots
 Hero Component
-![Trailer Component](public\trailer.png)
+![Trailer Component](public/trailer.png)
 GPT Search Page
-![Trailer Component](public\gpt-search.png)
+![Trailer Component](public/gpt-search.png)
 Sign-In
-![Trailer Component](public\login.png)
+![Trailer Component](public/login.png)
 Suggestions from TMDB API
-![Trailer Component](public\suggestions.png)
+![Trailer Component](public/suggestions.png)
